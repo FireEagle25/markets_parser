@@ -38,7 +38,7 @@ class BuygoodsParser(Parser):
             pass
 
         try:
-            product_data["weight"] = page.xpath("//td[re:match(text(), 'Package weight')]", namespaces={"re": "http://exslt.org/regular-expressions"})[0].getparent().getchildren()[1].xpath("string()").split(' ')[0]
+            product_data["weight"] = page.xpath("//td[re:match(text(), 'Package weight')]", namespaces={"re": "http://exslt.org/regular-expressions"})[0].getparent().getchildren()[1].xpath("string()").split(' ')[0].replace('.', ',')
         except BaseException:
             pass
 

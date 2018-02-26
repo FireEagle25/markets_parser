@@ -44,7 +44,7 @@ def main():
     if len(args) >= 3:
         save_data(parsed_data, args[2])
     else:
-        load_data(parsed_data)
+        save_data(parsed_data)
 
 
 if __name__ == "__main__":

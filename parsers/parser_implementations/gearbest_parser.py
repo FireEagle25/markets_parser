@@ -57,10 +57,10 @@ class GearbestParser(Parser):
                 pass
 
         try:
-            product_data["weight"] = sizes_and_weight_str.split('Package weight: ')[1].split(' kg')[0]
+            product_data["weight"] = sizes_and_weight_str.split('Package weight: ')[1].split(' kg')[0].replace('.', ',')
         except BaseException:
             try:
-                product_data["weight"] = sizes_and_weight_str.split('Вес упаковки: ')[1].split(' кг')[0]
+                product_data["weight"] = sizes_and_weight_str.split('Вес упаковки: ')[1].split(' кг')[0].replace('.', ',')
             except BaseException:
                 pass
 

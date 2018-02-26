@@ -1,3 +1,4 @@
+import os
 from openpyxl import load_workbook, Workbook
 
 START_LOAD_DATA_COL = 2
@@ -16,7 +17,7 @@ def load_data(file_path="input.xlsx"):
             values.append(value)
             counter += 1
     finally:
-        print('No input file')
+        print('Отсутствует входной файл')
         exit()
 
     return values
