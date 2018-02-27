@@ -1,6 +1,8 @@
 import os
 from openpyxl import load_workbook, Workbook
 
+import configs
+
 START_LOAD_DATA_COL = 2
 
 
@@ -25,14 +27,19 @@ def load_data(file_path="input.xlsx"):
 
 def save_data(products, file_path="output.xlsx"):
     wb = Workbook()
+    not_found_products = []
 
     sheet = wb.active
 
     sheet.title = "Товары"
-    sheet.append(['Код', "Название", "Ссылка", "Вес упаковки", "Длина", "Ширина", "Высота"])
+    sheet.append(['Код', "Название", "Ссылка", "Стоимость", "Вес упаковки", "Длина", "Ширина", "Высота"])
 
     for product in products:
-        output_list = [product['id'], product['name'], product['url'], product['weight']]
+        if product['name'] == configs.NOT_FOUND_STR:
+            not_found_products.append(product)
+            continue
+
+        output_list = [product['id'], product['name'], product['url'], product['price'], product['weight']]
 
         if isinstance(product['size'], list):
             output_list = output_list + [float(item) for item in product['size']]
@@ -40,5 +47,9 @@ def save_data(products, file_path="output.xlsx"):
             output_list.append(product['size'])
 
         sheet.append(output_list)
-
+    if len(not_found_products) > 0:
+        not_found_list = wb.create_sheet(title="Не найденные")
+        not_found_list.append('Код')
+        for product in not_found_products:
+            not_found_list.append(product['id'])
     wb.save(filename=file_path)

@@ -33,7 +33,7 @@ class GearbestParser(Parser):
     @classmethod
     def get_product_data(cls, product_id):
 
-        product_data = {'id': product_id, 'name': cls.NOT_FOUND_STR, 'size': cls.NOT_FOUND_STR, 'weight': cls.NOT_FOUND_STR, 'url': cls.get_product_url(product_id)}
+        product_data = {'id': product_id, 'price': cls.NOT_FOUND_STR, 'name': cls.NOT_FOUND_STR, 'size': cls.NOT_FOUND_STR, 'weight': cls.NOT_FOUND_STR, 'url': cls.get_product_url(product_id)}
         sizes_and_weight_str = ""
         page = None
 
@@ -41,6 +41,7 @@ class GearbestParser(Parser):
             req = cls.get_fake_agent_req(product_data['url'])
             page = etree.HTML(urllib.request.urlopen(req).read().decode("utf-8"))
             product_data["name"] = page.cssselect('.goods-info-top')[0].getchildren()[0].xpath("string()")
+            product_data['price'] = page.cssselect('.my_shop_price')[0].xpath("string()")
             sizes_and_weight_str = page.xpath("//td[re:match(text(), 'weight')]", namespaces={"re": "http://exslt.org/regular-expressions"})[0].xpath('string()')
         except BaseException:
             try:

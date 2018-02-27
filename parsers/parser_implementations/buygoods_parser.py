@@ -27,13 +27,14 @@ class BuygoodsParser(Parser):
     @classmethod
     def get_product_data(cls, product_id):
 
-        product_data = {'id': product_id, 'name': cls.NOT_FOUND_STR, 'size': cls.NOT_FOUND_STR, 'weight': cls.NOT_FOUND_STR, 'url': cls.get_product_url(product_id)}
+        product_data = {'id': product_id, 'price': cls.NOT_FOUND_STR, 'name': cls.NOT_FOUND_STR, 'size': cls.NOT_FOUND_STR, 'weight': cls.NOT_FOUND_STR, 'url': cls.get_product_url(product_id)}
         page = None
 
         try:
             req = cls.get_fake_agent_req(product_data['url'])
             page = etree.HTML(urllib.request.urlopen(req).read().decode("utf-8"))
             product_data["name"] = page.cssselect('.goods_info_inner')[0].getchildren()[0].xpath("string()")
+            product_data['price'] = page.cssselect('.my_shop_price')[0].xpath("string()")
         except BaseException:
             pass
 
