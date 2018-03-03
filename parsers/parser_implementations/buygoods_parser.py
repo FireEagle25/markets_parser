@@ -49,7 +49,7 @@ class BuygoodsParser(Parser):
             pass
 
         try:
-            weights = [float(weight_td.xpath('string()').split('kg')[0]) for weight_td in page.xpath("//td[re:match(., '[Kk][gG]') and @align='left']", namespaces={"re": "http://exslt.org/regular-expressions"})]
+            weights = [float(re.split('[Kk][Gg]', weight_td.xpath('string()'))[0]) for weight_td in page.xpath("//td[re:match(., '[Kk][Gg]') and @align='left']", namespaces={"re": "http://exslt.org/regular-expressions"})]
             product_data["weight"] = str(max(weights)).replace('.', ',')
 
             print('Вес успешно найдены')
