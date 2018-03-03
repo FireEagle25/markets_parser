@@ -34,7 +34,7 @@ def save_data(products, file_path="output.xlsx"):
     sheet = wb.active
 
     sheet.title = "Товары"
-    sheet.append(['Код', "Название", "Ссылка", "Стоимос ть", "Вес упаковки", "Длина", "Ширина", "Высота"])
+    sheet.append(['Код', "Название", "Ссылка", "Стоимость", "Вес упаковки", "Длина", "Ширина", "Высота"])
 
     for product in products:
         if product['name'] == configs.NOT_FOUND_STR:

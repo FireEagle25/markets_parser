@@ -56,9 +56,9 @@ class GearbestParser(Parser):
             print('Цена успешно найдена')
             sizes_and_weight_str = page.xpath("//td[re:match(., '[Ww]eight.* kg')]", namespaces={"re": "http://exslt.org/regular-expressions"})
             if not sizes_and_weight_str:
-                sizes_and_weight_str = page.xpath("//td[re:match(., '[Ww]eight')]",namespaces={"re": "http://exslt.org/regular-expressions"})
+                sizes_and_weight_str = page.xpath("//td[re:match(., '[Ww]eight')]", namespaces={"re": "http://exslt.org/regular-expressions"})
                 if not sizes_and_weight_str:
-                    sizes_and_weight_str = page.xpath("//*[re:match(., '[Ww]eight')]",namespaces={"re": "http://exslt.org/regular-expressions"})
+                    sizes_and_weight_str = page.xpath("//*[re:match(., '[Ww]eight')]", namespaces={"re": "http://exslt.org/regular-expressions"})
 
             sizes_and_weight_str = sizes_and_weight_str[0].xpath('string()')
         except BaseException:
