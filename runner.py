@@ -46,6 +46,8 @@ def main():
     else:
         save_data(parsed_data)
 
+    print("Успешно завершено")
+
 
 if __name__ == "__main__":
     main()
