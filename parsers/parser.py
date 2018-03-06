@@ -1,6 +1,9 @@
 from abc import ABC, abstractmethod
 from urllib import request
 
+import os
+from progress.bar import Bar, ChargingBar
+
 import configs
 
 
@@ -13,7 +16,15 @@ class Parser(ABC):
         self.identifiers = identifiers
 
     def parse(self):
-        return [self.get_product_data(identifier) for identifier in self.identifiers]
+        bar = ChargingBar('Завершено', max=len(self.identifiers))
+
+        products_data = []
+        for identifier in self.identifiers:
+            products_data.append(self.get_product_data(identifier))
+            bar.next()
+        bar.finish()
+
+        return products_data
 
     @staticmethod
     def get_fake_agent_req(url):
