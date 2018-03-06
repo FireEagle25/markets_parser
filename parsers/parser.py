@@ -1,8 +1,6 @@
 from abc import ABC, abstractmethod
 from urllib import request
-
-import os
-from progress.bar import Bar, ChargingBar
+from progress.bar import ChargingBar
 
 import configs
 
