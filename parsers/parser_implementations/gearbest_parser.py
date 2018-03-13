@@ -52,7 +52,7 @@ class GearbestParser(Parser):
             b = urllib.request.urlopen(req).read().decode("utf-8")
             product_data["name"] = page.cssselect('.goods-info-top')[0].getchildren()[0].xpath("string()")
             print('Название успешно найдено')
-            product_data['price'] = page.cssselect('.my_shop_price')[0].xpath("string()").replace('.', ',')
+            product_data['price'] = page.cssselect('.my_shop_price')[0].xpath("string()").replace('.', ',').replace('$', '').replace('р.', '')
             print('Цена успешно найдена')
             sizes_and_weight_str = page.xpath("//td[re:match(., '[Ww]eight.* kg')]", namespaces={"re": "http://exslt.org/regular-expressions"})
             if not sizes_and_weight_str:
@@ -76,6 +76,10 @@ class GearbestParser(Parser):
                 print('Размеры успешно найдены')
             except BaseException:
                 pass
+        finally:
+            for size in product_data['size']:
+                if re.match(r'^.*$', size) is None:
+                    product_data["size"] = cls.NOT_FOUND_STR
 
         try:
             product_data["weight"] = sizes_and_weight_str.split('Package weight: ')[1].split('kg')[0].replace('.', ',')
@@ -89,5 +93,9 @@ class GearbestParser(Parser):
                     print('Вес успешно найден')
                 except BaseException:
                     pass
+        finally:
+            if re.match(r'^.*$', product_data["weight"]) is None:
+                product_data["weight"] = cls.NOT_FOUND_STR
+
 
         return product_data

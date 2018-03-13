@@ -43,7 +43,7 @@ class BuygoodsParser(Parser):
             page = etree.HTML(urllib.request.urlopen(req).read().decode("utf-8"))
             product_data["name"] = page.xpath(("(//h1[@itemprop='name'])"))[0].xpath('string()')
             print('Название успешно найдено')
-            product_data['price'] = page.xpath(("(//span[@class='my_shop_price'])"))[0].xpath('string()').replace('.', ',')
+            product_data['price'] = page.xpath(("(//span[@class='my_shop_price'])"))[0].xpath('string()').replace('.', ',').replace('$', '').replace('р.', '')
             print('Цена успешно найдена')
         except BaseException:
             pass
