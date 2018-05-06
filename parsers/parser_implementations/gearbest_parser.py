@@ -21,14 +21,14 @@ class GearbestParser(Parser):
         try:
             req = cls.get_fake_agent_req(GearbestParser.SITE_URL + '/' + str(product_id) + '-_gear/')
             page = etree.HTML(urllib.request.urlopen(req).read().decode("utf-8"))
-            url = page.cssselect('.all_proNamContent')[0].getchildren()[0].attrib['href']
+            url = page.cssselect('.gbGoodsItem_thumb')[0].attrib['href']
             print('Ссылка успешно найдена')
         except IndexError:
             print("Не удается найти ссылку на англиской версии сайта")
             try:
                 req = cls.get_fake_agent_req(GearbestParser.RU_SITE_URL + '/' + str(product_id) + '-_gear/')
                 page = etree.HTML(urllib.request.urlopen(req).read().decode("utf-8"))
-                url = page.cssselect('.all_proNamContent')[0].getchildren()[0].attrib['href']
+                url = page.cssselect('.gbGoodsItem_thumb')[0].attrib['href']
                 print('Ссылка успешно найдена')
             except IndexError:
                 print("Не удается найти ссылку на русской версии сайта")
@@ -42,17 +42,16 @@ class GearbestParser(Parser):
     def get_product_data(cls, product_id):
         print(product_id)
 
-        product_data = {'id': product_id, 'price': cls.NOT_FOUND_STR, 'name': cls.NOT_FOUND_STR, 'size': cls.NOT_FOUND_STR, 'weight': cls.NOT_FOUND_STR, 'url': cls.get_product_url(product_id)}
+        product_data = {'id': product_id, 'price': cls.NOT_FOUND_STR, 'name': cls.NOT_FOUND_STR, 'size': cls.NOT_FOUND_STR, 'weight': cls.NOT_FOUND_STR, 'url': cls.get_product_url(product_id), 'image': cls.NOT_FOUND_STR}
         sizes_and_weight_str = ""
         page = None
 
         try:
             req = cls.get_fake_agent_req(product_data['url'])
             page = etree.HTML(urllib.request.urlopen(req).read().decode("utf-8"))
-            b = urllib.request.urlopen(req).read().decode("utf-8")
-            product_data["name"] = page.cssselect('.goods-info-top')[0].getchildren()[0].xpath("string()")
+            product_data["name"] = page.cssselect('.goodsIntro_title')[0].xpath("string()").lstrip().replace('\n', '')
             print('Название успешно найдено')
-            product_data['price'] = page.cssselect('.my_shop_price')[0].xpath("string()").replace('.', ',').replace('$', '').replace('р.', '')
+            product_data['price'] = re.findall(r"[-+]?\d*\.\d+|\d+", page.cssselect('.goodsIntro_price')[0].xpath("string()"))[0].replace('.', ',')
             print('Цена успешно найдена')
             sizes_and_weight_str = page.xpath("//td[re:match(., '[Ww]eight.* kg')]", namespaces={"re": "http://exslt.org/regular-expressions"})
             if not sizes_and_weight_str:
@@ -97,5 +96,10 @@ class GearbestParser(Parser):
             if re.match(r'^.*$', product_data["weight"]) is None:
                 product_data["weight"] = cls.NOT_FOUND_STR
 
+        try:
+            product_data["image"] = cls.download_image(page.cssselect('.goodsIntro_largeImgWrap')[0].getchildren()[0].attrib['src'])
+            print('Изображение успешно найдено')
+        except BaseException:
+            print('Не удалось найти изображение')
 
         return product_data

@@ -59,9 +59,15 @@ class BuygoodsParser(Parser):
         try:
             sizes = [sizes_td.xpath('string()').split('cm')[0].split(' x ') for sizes_td in page.xpath("//td[re:match(., '[\d\.\d]+ x [\d\.\d]+ x [\d\.\d]+ cm') and @align='left']",
                                   namespaces={"re": "http://exslt.org/regular-expressions"})]
-            product_data["size"] = functools.reduce(lambda x,y: x if x[0] > y[0] else y, sizes)
+            product_data["size"] = functools.reduce(lambda x,y: x if float(x[0]) > float(y[0]) else y, sizes)
             print('Размер успешно найден')
         except BaseException:
             pass
+
+        try:
+            product_data["image"] = cls.download_image(page.cssselect('.jqzoom')[0].getchildren()[0].attrib['src'])
+            print('Изображение успешно найдено')
+        except BaseException:
+            print('Не удалось найти изображение')
 
         return product_data

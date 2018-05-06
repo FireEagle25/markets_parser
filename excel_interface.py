@@ -1,4 +1,3 @@
-import os
 from openpyxl import load_workbook, Workbook
 
 import configs
@@ -34,14 +33,20 @@ def save_data(products, file_path="output.xlsx"):
     sheet = wb.active
 
     sheet.title = "Товары"
-    sheet.append(['Код', "Название", "Ссылка", "Стоимость", "Вес упаковки", "Длина", "Ширина", "Высота"])
+    sheet.append(['Код', "Название", "Ссылка", "Изображение", "Стоимость", "Вес упаковки", "Длина", "Ширина", "Высота"])
 
     for product in products:
         if product['name'] == configs.NOT_FOUND_STR:
             not_found_products.append(product)
             continue
 
-        output_list = [product['id'], product['name'], product['url'], product['price'], product['weight']]
+        output_list = [
+            product['id'],
+            product['name'],
+            '=HYPERLINK("'+product['url']+'","'+product['url']+'")' if product['url'] != configs.NOT_FOUND_STR else product['url'],
+            '=HYPERLINK("file://' + product['image'] + '","' + product['image'] + '")' if product['image'] != configs.NOT_FOUND_STR else product['image'],
+            product['price'],
+            product['weight']]
 
 
         try:

@@ -1,5 +1,8 @@
+import urllib
 from abc import ABC, abstractmethod
 from urllib import request
+
+import os
 from progress.bar import ChargingBar
 
 import configs
@@ -42,3 +45,10 @@ class Parser(ABC):
     @abstractmethod
     def get_product_data(cls, product_id):
         pass
+
+    @staticmethod
+    def download_image(url):
+        splitted_url = url.split('/')
+        file_path = os.getcwd() + '/images/' + splitted_url[len(splitted_url) - 1]
+        urllib.request.urlretrieve(url, file_path)
+        return file_path
