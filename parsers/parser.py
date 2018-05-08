@@ -13,15 +13,16 @@ class Parser(ABC):
     SITE_URL = ""
     NOT_FOUND_STR = configs.NOT_FOUND_STR
 
-    def __init__(self, identifiers):
+    def __init__(self, identifiers, image_download):
         self.identifiers = identifiers
+        self.image_download = image_download
 
     def parse(self):
         bar = ChargingBar('Завершено', max=len(self.identifiers))
 
         products_data = []
         for identifier in self.identifiers:
-            products_data.append(self.get_product_data(identifier))
+            products_data.append(self.get_product_data(identifier, self.image_download))
             bar.next()
         bar.finish()
 
@@ -43,7 +44,7 @@ class Parser(ABC):
 
     @classmethod
     @abstractmethod
-    def get_product_data(cls, product_id):
+    def get_product_data(cls, product_id, image_download):
         pass
 
     @staticmethod

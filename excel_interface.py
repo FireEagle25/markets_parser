@@ -26,14 +26,18 @@ def load_data(file_path="input.xlsx"):
     return values
 
 
-def save_data(products, file_path="output.xlsx"):
+def save_data(products, with_image=False, file_path="output.xlsx"):
     wb = Workbook()
     not_found_products = []
 
     sheet = wb.active
 
     sheet.title = "Товары"
-    sheet.append(['Код', "Название", "Ссылка", "Изображение", "Стоимость", "Вес упаковки", "Длина", "Ширина", "Высота"])
+    rows = ['Код', "Название", "Ссылка", "Стоимость", "Вес упаковки", "Длина", "Ширина", "Высота"]
+    if with_image:
+        rows.append('Изображение')
+    sheet.append(rows)
+
 
     for product in products:
         if product['name'] == configs.NOT_FOUND_STR:
@@ -44,7 +48,6 @@ def save_data(products, file_path="output.xlsx"):
             product['id'],
             product['name'],
             '=HYPERLINK("'+product['url']+'","'+product['url']+'")' if product['url'] != configs.NOT_FOUND_STR else product['url'],
-            '=HYPERLINK("file://' + product['image'] + '","' + product['image'] + '")' if product['image'] != configs.NOT_FOUND_STR else product['image'],
             product['price'],
             product['weight']]
 
@@ -52,7 +55,11 @@ def save_data(products, file_path="output.xlsx"):
         try:
             output_list = output_list + [float(item) for item in product['size']]
         except BaseException:
-            output_list.append(product['size'])
+            output_list.append([configs.NOT_FOUND_STR for _ in range(3)])
+
+        if with_image:
+            output_list.append('=HYPERLINK("file://' + product['image'] + '","' + product['image'] + '")' if product['image'] != configs.NOT_FOUND_STR else product['image'])
+
         try:
             sheet.append(output_list)
         except BaseException:

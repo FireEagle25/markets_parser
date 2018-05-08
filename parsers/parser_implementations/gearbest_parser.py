@@ -14,7 +14,7 @@ class GearbestParser(Parser):
     RU_SITE_URL = RU_GEARBEST_URL
 
     @classmethod
-    def get_product_url(cls, product_id):
+    def get_product_url(cls, product_id, image_download=False):
 
         url = cls.NOT_FOUND_STR
 
@@ -39,7 +39,7 @@ class GearbestParser(Parser):
         return url
 
     @classmethod
-    def get_product_data(cls, product_id):
+    def get_product_data(cls, product_id, image_download):
         print(product_id)
 
         product_data = {'id': product_id, 'price': cls.NOT_FOUND_STR, 'name': cls.NOT_FOUND_STR, 'size': cls.NOT_FOUND_STR, 'weight': cls.NOT_FOUND_STR, 'url': cls.get_product_url(product_id), 'image': cls.NOT_FOUND_STR}
@@ -96,10 +96,11 @@ class GearbestParser(Parser):
             if re.match(r'^.*$', product_data["weight"]) is None:
                 product_data["weight"] = cls.NOT_FOUND_STR
 
-        try:
-            product_data["image"] = cls.download_image(page.cssselect('.goodsIntro_largeImgWrap')[0].getchildren()[0].attrib['src'])
-            print('Изображение успешно найдено')
-        except BaseException:
-            print('Не удалось найти изображение')
+        if image_download:
+            try:
+                product_data["image"] = cls.download_image(page.cssselect('.goodsIntro_largeImgWrap')[0].getchildren()[0].attrib['src'])
+                print('Изображение успешно найдено')
+            except BaseException:
+                print('Не удалось найти изображение')
 
         return product_data

@@ -32,10 +32,17 @@ class BuygoodsParser(Parser):
         return url
 
     @classmethod
-    def get_product_data(cls, product_id):
+    def get_product_data(cls, product_id, image_download=False):
         print(product_id)
 
-        product_data = {'id': product_id, 'price': cls.NOT_FOUND_STR, 'name': cls.NOT_FOUND_STR, 'size': cls.NOT_FOUND_STR, 'weight': cls.NOT_FOUND_STR, 'url': cls.get_product_url(product_id)}
+        product_data = {
+            'id': product_id,
+            'price': cls.NOT_FOUND_STR,
+            'name': cls.NOT_FOUND_STR,
+            'size': cls.NOT_FOUND_STR,
+            'weight': cls.NOT_FOUND_STR,
+            'image': cls.NOT_FOUND_STR,
+            'url': cls.get_product_url(product_id)}
         page = None
 
         try:
@@ -64,10 +71,11 @@ class BuygoodsParser(Parser):
         except BaseException:
             pass
 
-        try:
-            product_data["image"] = cls.download_image(page.cssselect('.jqzoom')[0].getchildren()[0].attrib['src'])
-            print('Изображение успешно найдено')
-        except BaseException:
-            print('Не удалось найти изображение')
+        if image_download:
+            try:
+                product_data["image"] = cls.download_image(page.cssselect('.jqzoom')[0].getchildren()[0].attrib['src'])
+                print('Изображение успешно найдено')
+            except BaseException:
+                print('Не удалось найти изображение')
 
         return product_data
