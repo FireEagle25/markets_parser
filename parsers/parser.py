@@ -48,8 +48,8 @@ class Parser(ABC):
         pass
 
     @staticmethod
-    def download_image(url):
-        splitted_url = url.split('/')
-        file_path = os.getcwd() + '/images/' + splitted_url[len(splitted_url) - 1]
+    def download_image(url, name):
+        splitted_url = url.split('.')
+        file_path = os.getcwd() + '/images/' + str(name) + '.' + splitted_url[len(splitted_url) - 1]
         urllib.request.urlretrieve(url, file_path)
         return file_path

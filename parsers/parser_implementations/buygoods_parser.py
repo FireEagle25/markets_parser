@@ -50,7 +50,7 @@ class BuygoodsParser(Parser):
             page = etree.HTML(urllib.request.urlopen(req).read().decode("utf-8"))
             product_data["name"] = page.xpath(("(//h1[@itemprop='name'])"))[0].xpath('string()')
             print('Название успешно найдено')
-            product_data['price'] = page.xpath(("(//span[@class='my_shop_price'])"))[0].xpath('string()').replace('.', ',').replace('$', '').replace('р.', '')
+            product_data['price'] = page.xpath(("(//span[@id='total_price'])"))[0].attrib['orgp'].replace('.', ',').replace('$', '').replace('р.', '')
             print('Цена успешно найдена')
         except BaseException:
             pass
@@ -73,7 +73,7 @@ class BuygoodsParser(Parser):
 
         if image_download:
             try:
-                product_data["image"] = cls.download_image(page.cssselect('.jqzoom')[0].getchildren()[0].attrib['src'])
+                product_data["image"] = cls.download_image(page.cssselect('.jqzoom')[0].getchildren()[0].attrib['src'], product_id)
                 print('Изображение успешно найдено')
             except BaseException:
                 print('Не удалось найти изображение')

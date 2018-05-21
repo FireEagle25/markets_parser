@@ -34,6 +34,8 @@ class GearbestParser(Parser):
                 print("Не удается найти ссылку на русской версии сайта")
         except URLError:
             print('Не удается получить доступ к сайту')
+        except BaseException:
+            print('Не удалось получить доступ к странице')
 
 
         return url
@@ -51,7 +53,7 @@ class GearbestParser(Parser):
             page = etree.HTML(urllib.request.urlopen(req).read().decode("utf-8"))
             product_data["name"] = page.cssselect('.goodsIntro_title')[0].xpath("string()").lstrip().replace('\n', '')
             print('Название успешно найдено')
-            product_data['price'] = re.findall(r"[-+]?\d*\.\d+|\d+", page.cssselect('.goodsIntro_price')[0].xpath("string()"))[0].replace('.', ',')
+            product_data['price'] = page.cssselect('.goodsIntro_price')[0].attrib['data-currency'].replace('.', ',')
             print('Цена успешно найдена')
             sizes_and_weight_str = page.xpath("//td[re:match(., '[Ww]eight.* kg')]", namespaces={"re": "http://exslt.org/regular-expressions"})
             if not sizes_and_weight_str:
@@ -98,7 +100,7 @@ class GearbestParser(Parser):
 
         if image_download:
             try:
-                product_data["image"] = cls.download_image(page.cssselect('.goodsIntro_largeImgWrap')[0].getchildren()[0].attrib['src'])
+                product_data["image"] = cls.download_image(page.cssselect('.goodsIntro_largeImgWrap')[0].getchildren()[0].attrib['src'], product_id)
                 print('Изображение успешно найдено')
             except BaseException:
                 print('Не удалось найти изображение')

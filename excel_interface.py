@@ -33,11 +33,10 @@ def save_data(products, with_image=False, file_path="output.xlsx"):
     sheet = wb.active
 
     sheet.title = "Товары"
-    rows = ['Код', "Название", "Ссылка", "Стоимость", "Вес упаковки", "Длина", "Ширина", "Высота"]
+    rows = ['Код', "Название", "Стоимость", "Ссылка", "Вес упаковки", "Длина", "Ширина", "Высота"]
     if with_image:
         rows.append('Изображение')
     sheet.append(rows)
-
 
     for product in products:
         if product['name'] == configs.NOT_FOUND_STR:
@@ -47,10 +46,9 @@ def save_data(products, with_image=False, file_path="output.xlsx"):
         output_list = [
             product['id'],
             product['name'],
-            '=HYPERLINK("'+product['url']+'","'+product['url']+'")' if product['url'] != configs.NOT_FOUND_STR else product['url'],
-            product['price'],
-            product['weight']]
-
+            float(product['price'].replace(',', '.')),
+            '=HYPERLINK("' + product['url'] + '","' + product['url'] + '")' if product['url'] != configs.NOT_FOUND_STR else product['url'],
+            float(product['weight'].replace(',', '.'))]
 
         try:
             output_list = output_list + [float(item) for item in product['size']]
@@ -64,7 +62,6 @@ def save_data(products, with_image=False, file_path="output.xlsx"):
             sheet.append(output_list)
         except BaseException:
             not_found_products.append(product)
-            print(output_list)
 
     if len(not_found_products) > 0:
         not_found_list = wb.create_sheet(title="Не найденные")
