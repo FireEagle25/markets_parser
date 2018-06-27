@@ -46,9 +46,9 @@ def save_data(products, with_image=False, file_path="output.xlsx"):
         output_list = [
             product['id'],
             product['name'],
-            float(product['price'].replace(',', '.')),
+            float(product['price'].replace(',', '.')) if configs.NOT_FOUND_STR != product['price'] else product['price'],
             '=HYPERLINK("' + product['url'] + '","' + product['url'] + '")' if product['url'] != configs.NOT_FOUND_STR else product['url'],
-            float(product['weight'].replace(',', '.'))]
+            float(product['weight'].replace(',', '.')) if configs.NOT_FOUND_STR != product['weight'] else product['weight']]
 
         try:
             output_list = output_list + [float(item) for item in product['size']]
